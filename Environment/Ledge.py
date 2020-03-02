@@ -1,5 +1,5 @@
-from Environment.Gamesimulator import *
+from Environment.Game import *
 
-class Ledge(GameSimulator):
+class Ledge(Game):
   def print_board(self):
     print("board")

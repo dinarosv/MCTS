@@ -1,6 +1,7 @@
 
-class GameSimulator:
-  def __init__(self): 
+class Statemanager:
+  def __init__(self, game): 
+    self.game = game
     raise NotImplementedError()
 
   def set_initial_game(self):

@@ -1,8 +1,8 @@
 
 class Montecarlo:
-  def __init__(self, M, gamesimulator):
+  def __init__(self, M, statemanager):
     self.M = M # Number of simulations/rollouts per episode
-    self.gamesimulator = gamesimulator
+    self.statemanager = statemanager
     self.tree_policy = None
     self.default_policy = None
     raise NotImplementedError()

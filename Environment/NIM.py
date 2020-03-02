@@ -1,5 +1,5 @@
-from Environment.Gamesimulator import *
+from Environment.Game import *
 
-class NIM(GameSimulator):
+class NIM(Game):
   def print_board(self):
     print("booooard")
