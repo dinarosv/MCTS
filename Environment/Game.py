@@ -1,10 +1,10 @@
 
 class Game:
-    def __init__(self):
-        self.state = None
+    def set_initial_game(self):
+        raise NotImplementedError
 
     def get_state(self):
-        return self.state
+        raise NotImplementedError
 
     def get_actions(self):
         raise NotImplementedError
@@ -14,3 +14,4 @@ class Game:
 
     def is_final_state(self):
         raise NotImplementedError
+
