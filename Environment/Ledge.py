@@ -1,10 +1,14 @@
 from Game import *
 import numpy as np
-
+import copy as cp
 
 class Ledge(Game):
     def __init__(self, board):
-        self.state = board
+        self.initial_state = board
+        self.state = cp.deepcopy(board)
+
+    def set_initial_game(self):
+        self.state = cp.deepcopy(self.initial_state)
 
     def get_actions(self):
         actions = list()
