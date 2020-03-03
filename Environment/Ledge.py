@@ -1,4 +1,4 @@
-from Game import *
+from Environment.Game import Game
 import numpy as np
 import copy as cp
 

@@ -1,13 +1,17 @@
 from Environment.Ledge import *
 from Environment.NIM import *
-from Environment.StateManager import *
+from Environment.Statemanager import *
 from MC import Montecarlo
 from Player import *
 from Gamesimulator import *
+from ConfigLoader import get_config
 
 if __name__ == "__main__":
+
+    nim_config, ledge_config, verbose_mode = get_config()
+
     #game = NIM()
-    game = Ledge()
+    game = Ledge(ledge_config["BoardConfiguration"])
 
     mystatemanager = Statemanager(game=game)
 
