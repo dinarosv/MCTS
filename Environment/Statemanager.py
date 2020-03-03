@@ -2,16 +2,16 @@
 class Statemanager:
   def __init__(self, game): 
     self.game = game
-    raise NotImplementedError()
+    self.game_stats = []
 
   def set_initial_game(self):
-    raise NotImplementedError()
+    self.game.set_initial_game()
 
   def generate_child_states(self, parent_state):
-    raise NotImplementedError()
+    return self.game.get_actions()
 
   def is_winning_state(self, state):
-    raise NotImplementedError()
+    return self.game.is_winning_state()
 
   def get_game_stats(self):
-    raise NotImplementedError()
+    return self.game_stats
