@@ -37,9 +37,3 @@ class Ledge(Game):
 
     def is_final_state(self):
         return not (1 in self.state or 2 in self.state)
-
-
-ledge = Ledge([1, 0, 0, 1, 0, 2, 1, 1])
-print(ledge.get_actions())
-ledge.do_action(("move", 2, (5,4)))
-print(ledge.get_actions())
