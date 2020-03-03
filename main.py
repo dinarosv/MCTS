@@ -8,18 +8,19 @@ from ConfigLoader import get_config
 
 if __name__ == "__main__":
 
-    nim_config, ledge_config, verbose_mode = get_config()
+    config = get_config()
 
     #game = NIM()
-    game = Ledge(ledge_config["BoardConfiguration"])
+    game = Ledge(config.ledge_board_configuration)
 
-    mystatemanager = Statemanager(game=game)
+    statemanager = Statemanager(game)
 
-    mc1 = Montecarlo(M=500)
-    mc2 = Montecarlo(M=500)
-    player1 = Player(mc1)
-    player2 = Player(mc2)
+    mc = Montecarlo(config.simulations_per_game_move, statemanager)
+    player1 = Player(mc, "player1")
+    player2 = Player(mc, "player2")
 
-    gamesimulator = Gamesimulator(player1, player2, statemanager)
-    statistics = gamesimulator.run_batch(500)
+    gamesimulator = Gamesimulator(game, player1, player2, config)
+    statistics = gamesimulator.run_batch(config.games_in_batch)
+
+    print(statistics)
 
