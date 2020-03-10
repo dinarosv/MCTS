@@ -5,7 +5,7 @@ class Node:
     def __init__(self, state_manager, state=None, parent=None):
         self.state_manager = state_manager
         self.state = self.state_manager.get_state() if state == None else state
-        self.is_terimal = self.state_manager.is_winning_state(self.state)
+        self.is_terminal = self.state_manager.is_winning_state(self.state)
         self.parent = parent
         self.children = dict()
         self.explorations = dict()
@@ -18,16 +18,11 @@ class Node:
         return len(self.children) == 0
 
     def expand_child_nodes(self):
-        for child_state, action in self.state_manager.expand_child_states():
+        for action, child_state in self.state_manager.generate_child_states(self.state):
+            self.explorations[action] = 0
             self.children[action] = Node(self.state_manager, child_state, self)
 
     def get_child(self, action):
-        self.explorations[(self.state, action)] += 1
-        child = self.__get_child(action)
-        child.visits += 1
-        return child
-
-    def __get_child(self, action):
         return self.children[action]
 
     def prune_children(self):
@@ -37,10 +32,9 @@ class Node:
         if self.parent == None:
             return
         action = self.find_causing_action()
-        self.parent.explorations[(self.parent.state, action)] += 1
+        self.parent.explorations[action] += 1 # Should this traversal be counted during backprop? What about rollouts or selection?
         self.parent.accumulated_values += value
-        self.parent.q_values[action] = self.parent.accumulated_values / \
-            self.parent.explorations[action]
+        self.parent.q_values[action] = self.parent.accumulated_values / self.parent.explorations[action]
         self.parent.backpropagate(value)
 
     def get_exploration_bonus(self, action):
@@ -63,7 +57,9 @@ class Node:
 
     def find_causing_action(self):
         for action in self.parent.children:
-            if self == self.parent.__get_child(action):
+            if self == self.parent.get_child(action):
                 return action
-            else:
-                raise RuntimeError  # Failed to find what caused the child to be picked
+        raise RuntimeError
+
+    def get_reward(self, player):
+        return 1 if player == 1 else -1

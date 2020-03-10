@@ -8,4 +8,4 @@ game = Ledge([1, 1, 1, 0, 0, 2])
 agent = Agent(StateManager(game))
 
 game_manager = GameManager(game, agent)
-game_manager.run_batch(200)
+game_manager.run_batch(2)

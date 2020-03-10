@@ -1,4 +1,4 @@
-from Environment.Game import *
+from Game import *
 
 class NIM(Game):
   def __init__(self, N, K): #N:number of pieces, K: max pieces to remove

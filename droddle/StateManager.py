@@ -17,4 +17,4 @@ class StateManager:
         return children
 
     def is_winning_state(self, state):
-        return self.game.__is_final_state(state)
+        return self.game._is_final_state(state)
