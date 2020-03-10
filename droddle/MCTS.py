@@ -44,11 +44,13 @@ class MCTS:
 
         if player == 1:
             action = self.root_node.get_max_value_action()
+            self.root_node = self.root_node.get_child(action)
             print(f"player {player} did {action}")
             return action
         else:
             action = self.root_node.get_min_value_action()
             print(f"player {player} did {action}")
+            self.root_node = self.root_node.get_child(action)
             return action
         # Return action that leads to best state after having performed the rollout
 
