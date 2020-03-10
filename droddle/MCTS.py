@@ -6,14 +6,18 @@ class MCTS:
     def __init__(self, state_manager):
         self.state_manager = state_manager
         self.root_node = None
+        self.tree_policy = dict()
 
-    def select_node(self):
+    def select_node(self, player):
         if self.root_node == None:
             self.root_node = Node(self.state_manager)
             return self.root_node
         else:
-            # Propagate to next node to expand on
-            raise NotImplementedError
+            node = self.root_node
+            while not node.is_leaf_node():
+                action = node.get_max_value_action() if player == "Protagonist" else node.get_min_value_action()
+                node = node.__get_child(action)
+            return node
 
     def backpropagate(self, node, value):
         node.backpropagate(value)
@@ -37,7 +41,10 @@ class MCTS:
         return self.rollout(node)
 
     def get_action(self, player_name):
-        node = self.select_node()
+        for _ in range(200): #Number of simulations
+            node = self.select_node(player_name)
+        
+        
         self.perform_rollouts(node)
         new_node = self.select_node()
         if player_name == "Protagonist":
