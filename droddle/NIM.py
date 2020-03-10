@@ -13,8 +13,10 @@ class NIM(Game):
   def get_state(self):
     return self.pieces_left
 
-  def get_actions(self):
-    return [x+1 for x in range(self.K) if x+1 <= self.pieces_left]
+  def get_actions(self, state=None):
+    if state == None:
+      state = self.state
+    return [x+1 for x in range(self.K) if x+1 <= state]
 
   def do_action(self, action):
     self.pieces_left -= action
