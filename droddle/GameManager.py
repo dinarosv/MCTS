@@ -18,3 +18,5 @@ class GameManager:
     def run_batch(self, batch_size):
         for _ in range(batch_size):
             self.run()
+            self.game.set_initial_game()
+            self.agent.reset()

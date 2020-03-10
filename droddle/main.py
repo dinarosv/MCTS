@@ -4,8 +4,10 @@ from NIM import NIM
 from GameManager import GameManager
 from StateManager import StateManager
 
-game = Ledge([1, 1, 1, 0, 0, 2])
-agent = Agent(StateManager(game))
+ledge = Ledge([1, 1, 1, 0, 0, 2])
+nim = NIM(10, 3) 
 
-game_manager = GameManager(game, agent)
-game_manager.run_batch(2)
+agent = Agent(StateManager(nim))
+
+game_manager = GameManager(nim, agent)
+game_manager.run_batch(1)

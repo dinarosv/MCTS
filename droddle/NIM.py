@@ -22,6 +22,7 @@ class NIM(Game):
     self.pieces_left -= action
     if self.pieces_left < 0:
       self.pieces_left = 0
+    print(self.pieces_left)
 
   def is_final_state(self):
     return self.pieces_left == 0 

@@ -22,7 +22,7 @@ class MCTS:
         node.backpropagate(value)
 
     def perform_rollouts(self, node, player):
-        for _ in range(10):  # Swap number for the config-variable of how many simulations to do
+        for _ in range(4000):  # Swap number for the config-variable of how many simulations to do
             _, value = self.rollout(node, player)
             self.backpropagate(node, value)
             node.prune_children()
@@ -36,7 +36,7 @@ class MCTS:
         return self.rollout(node, abs(player - 1))
 
     def get_action(self, player):
-        for _ in range(10): #Number of simulations
+        for _ in range(200): #Number of simulations
             node, current_player = self.selection(player)
             node.expand_child_nodes()
             for _, leaf in node.children.items():
