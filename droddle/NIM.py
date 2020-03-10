@@ -1,4 +1,5 @@
 from Game import *
+import copy as cp
 
 class NIM(Game):
   def __init__(self, N, K): #N:number of pieces, K: max pieces to remove
@@ -22,3 +23,16 @@ class NIM(Game):
 
   def is_final_state(self):
     return self.pieces_left == 0 
+
+  def _do_action(self, state, action):
+    state -= action
+    if state < 0:
+      state = 0
+    return state
+
+  def _is_final_state(self, state):
+    return state == 0
+
+  def peek(self, state, action):
+    return self._do_action(cp.deepcopy(state), action)
+

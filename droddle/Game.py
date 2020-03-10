@@ -12,13 +12,13 @@ class Game:
     def do_action(self, action):
         raise NotImplementedError
 
-    def __do_action(self, state, action):
+    def _do_action(self, state, action):
         raise NotImplementedError
 
     def is_final_state(self):
         raise NotImplementedError
 
-    def __is_final_state(self, state):
+    def _is_final_state(self, state):
         raise NotImplementedError
 
     def peek(self, state, action):
