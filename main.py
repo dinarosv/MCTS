@@ -13,8 +13,7 @@ def main(argv):
     M = 500
     batch_size = 1
     verbose = "0"
-    rollouts = 3
-    opts, _ = getopt.getopt(argv,"hg:b:s:M:n:v:r:",["game=","board=","starting_player=", "M=", "batch=", "verbose=", "rollouts="])
+    opts, _ = getopt.getopt(argv,"hg:b:s:M:n:v:r:",["game=","board=","starting_player=", "M=", "batch=", "verbose="])
     for opt, arg in opts:
         if opt == '-h':
             print("-g or --game: Type of game. Should be 'ledge' or 'nim'")
@@ -23,14 +22,13 @@ def main(argv):
             print("-M or --M: Number of simulations (not required, default is 500)")
             print("-n or --batch: Batch-size (not required, default is 1)")
             print("-v or --verbose: 1 to show play-by-play (default is 0 - off)")
-            print("-r or --rollouts: No. of rollout simulations per leaf evaluation (default=1000)")
             sys.exit(2)
         elif opt in ("-g", "--game"):
             game_type = arg
         elif opt in ("-b", "--board"):
             board = arg
         elif opt in ("-s", "--starting_player"):
-            starting_player = arg
+            starting_player = eval(arg) if type(eval(arg)) is int else None
         elif opt in ("-M", "--M"):
             M = eval(arg) if type(eval(arg)) is int else 500
         elif opt in ("-n", "--batch"):
@@ -55,10 +53,11 @@ def main(argv):
     else:
         game = NIM(10, 3)
 
-    print(f"Starting game '{game_type}' with board '{board}', starting-player '{starting_player or 'random'}', M: '{M}', batch-size: '{batch_size}', verbose: '{verbose}' and rollout_simulations: '{rollouts}'")
+    print(f"Starting game '{game_type}' with board '{board}', starting-player '{starting_player}', M: '{M}', batch-size: '{batch_size}', verbose: '{verbose}'")
 
-    game_manager = GameManager(game=game, player_turn=starting_player, simulations=M, rollouts=rollouts)
-    game_manager.run_batch(batch_size, verbose)
+    game_manager = GameManager(game=game, player_turn=starting_player, simulations=M)
+    won = game_manager.run_batch(batch_size, verbose)
+    print(f"Player won: {won}/{batch_size}")
 
 if __name__ == "__main__":
     main(sys.argv[1:])

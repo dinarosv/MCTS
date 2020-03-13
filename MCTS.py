@@ -3,25 +3,26 @@ import random
 from Agent import Agent
 
 class MCTS(Agent):
-    def __init__(self, state_manager, simulations, rollout_simulations):
+    def __init__(self, state_manager, simulations):
         super().__init__(state_manager)
         self.root_node = Node(state_manager)
         self.simulations = simulations
-        self.rollout_simulations = rollout_simulations
 
     # Return action that leads to best state after having performed simulations
     def get_action(self, player):
         for _ in range(self.simulations): #Number of simulations
             # Selection
-            node, current_player = self.selection(player)
+            node, current_player = self.selection(player, self.root_node)
             # Expansion
             node.expand_child_nodes()
             # Leaf evaluation and backpropagation
+            #leaf, p = self.selection(current_player, node)
+
             for _, leaf in node.children.items():
                 self.perform_rollouts(leaf, current_player)
             
-            # TODO: Isn't q_values updated for each action
-            print(self.root_node.q_values)
+            # TODO: Aren't q_values updated for each action
+            #print(self.root_node.q_values)
 
         # Choose action
         action = self.root_node.get_max_value_action() if player == 1 else self.root_node.get_min_value_action()
@@ -32,8 +33,8 @@ class MCTS(Agent):
 
         return action
 
-    def selection(self, starting_player):
-        node = self.root_node
+    def selection(self, starting_player, start_node):
+        node = start_node
         player = starting_player
         while not node.is_leaf_node():
             # Get action following tree policy (choosing highest/lowest value action)
@@ -43,10 +44,10 @@ class MCTS(Agent):
         return node, player
 
     def perform_rollouts(self, node, player):
-        for _ in range(self.rollout_simulations):
-            value = self.rollout(node, player)
-            self.backpropagate(node, value)
-            node.prune_children()
+        #for _ in range(self.rollout_simulations):
+        value = self.rollout(node, player)
+        self.backpropagate(node, value)
+        node.prune_children()
 
     def rollout(self, node, player):
         if node.is_terminal:
