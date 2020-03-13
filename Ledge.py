@@ -42,9 +42,9 @@ class Ledge(Game):
             state[t] = coin_value
         return state
 
-    def do_action(self, action):
+    def do_action(self, action, verbose):
         self.state = self._do_action(self.state, action)
-        print(self.state)
+        return self.state
 
     def _is_final_state(self, state):
         return not (2 in state)
