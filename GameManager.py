@@ -4,10 +4,10 @@ from random import randint
 from MCTS import MCTS
 
 class GameManager:
-    def __init__(self, game, player_turn=None, simulations=500):
+    def __init__(self, game, player_turn=None, simulations=500, rollouts=1):
         self.game = game
         self.state_manager = StateManager(game=game)
-        self.agent = MCTS(state_manager=self.state_manager, simulations=simulations)
+        self.agent = MCTS(state_manager=self.state_manager, simulations=simulations, rollouts=rollouts)
         if player_turn == 0 or player_turn == 1:
             self.player_turn = player_turn
             self.static_player = True
@@ -29,8 +29,7 @@ class GameManager:
         if verbose == "1":
             print("------------")
             print(f"Player {self.player_turn} lost!")
-        
-        return abs(turn - 1)
+        return 1 if abs(turn - 1) == self.player_turn else 0
 
 
     def run_batch(self, batch_size, verbose):
