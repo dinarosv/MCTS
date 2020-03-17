@@ -29,7 +29,7 @@ class Ledge(Game):
                         if b_coin is not 0:
                             break
                         else:
-                            actions.append(("move", coin, (i, b_i)))
+                            actions.append(("move", coin, (i, i - 1 - b_i)))
         return actions
 
     def _do_action(self, state, action):
@@ -42,7 +42,7 @@ class Ledge(Game):
             state[t] = coin_value
         return state
 
-    def do_action(self, action, verbose):
+    def do_action(self, action):
         self.state = self._do_action(self.state, action)
         return self.state
 

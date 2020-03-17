@@ -17,7 +17,7 @@ class Node:
         return len(self.children) == 0
 
     def expand_child_nodes(self):
-        self.visits = 1
+        self.visits = 0
         for action, child_state in self.state_manager.generate_child_states(self.state):
             self.explorations[action] = 0
             self.q_values[action] = 0
@@ -34,7 +34,7 @@ class Node:
             return
         action = self.find_causing_action()
         self.parent.explorations[action] += 1 # Should this traversal be counted during backprop? What about rollouts or selection?
-
+        self.parent.visits += 1
         self.parent.accumulated_values += value
 
         self.parent.q_values[action] = self.parent.accumulated_values / self.parent.explorations[action]
@@ -62,4 +62,4 @@ class Node:
         raise RuntimeError
 
     def get_reward(self, player):
-        return 1 if player == 1 else -1
+        return 1 if player == 0 else -1

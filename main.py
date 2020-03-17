@@ -12,6 +12,7 @@ def main(argv):
     starting_player = None
     M = 500
     batch_size = 1
+    rollouts = 1
     verbose = "0"
     opts, _ = getopt.getopt(argv,"hg:b:s:M:n:v:r:",["game=","board=","starting_player=", "M=", "batch=", "verbose="])
     for opt, arg in opts:
@@ -36,7 +37,7 @@ def main(argv):
         elif opt in ("-v", "--verbose"):
             verbose = arg
         elif opt in ("-r", "--rollouts"):
-            rollouts = eval(arg) if type(eval(arg)) is int else 1000
+            rollouts = eval(arg) if type(eval(arg)) is int else 1
     if board and game_type:
         board_as_list = eval(board)
         if type(board_as_list) is list:
@@ -55,9 +56,9 @@ def main(argv):
 
     print(f"Starting game '{game_type}' with board '{board}', starting-player '{starting_player}', M: '{M}', batch-size: '{batch_size}', verbose: '{verbose}'")
 
-    game_manager = GameManager(game=game, player_turn=starting_player, simulations=M)
+    game_manager = GameManager(game=game, player_turn=starting_player, simulations=M, rollouts=rollouts)
     won = game_manager.run_batch(batch_size, verbose)
-    print(f"Player won: {won}/{batch_size}")
+    print(f"Player {starting_player} won: {won}/{batch_size}")
 
 if __name__ == "__main__":
     main(sys.argv[1:])
