@@ -2,15 +2,15 @@ from Node import MCTSNode
 import random
 from Agent import Agent
 
-class MCTS(Agent):
-    def __init__(self, state_manager, simulations, init_player):
-        super().__init__(state_manager)
-        self.root_node = MCTSNode(state_manager, init_player=init_player)
+class MCTS:
+    def __init__(self, state_manager, simulations):
+        self.state_manager = state_manager
         self.simulations = simulations
-        self.init_player = init_player
+        self.root_node = None
 
     # Return action that leads to best state after having performed simulations
     def get_action(self, player):
+        self.root_node = MCTSNode(self.state_manager, init_player=player)
         for _ in range(self.simulations): #Number of simulations
 
             # Selection
@@ -68,4 +68,4 @@ class MCTS(Agent):
         return random.sample(list(node.children), 1)[0]
 
     def reset(self):
-        self.root_node = MCTSNode(self.state_manager, init_player=self.init_player)
+        self.root_node = None

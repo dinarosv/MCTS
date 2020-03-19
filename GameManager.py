@@ -2,9 +2,12 @@ from StateManager import StateManager
 from Game import Game
 from random import randint
 from MCTS import MCTS
+from Agent import Agent
+from HumanPlayer import HumanPlayer
+from ComputerPlayer import ComputerPlayer
 
 class GameManager:
-    def __init__(self, game, player_turn=None, simulations=500, rollouts=1):
+    def __init__(self, game, computer_only=False, player_turn=None, simulations=500, rollouts=1):
         self.game = game
         self.state_manager = StateManager(game=game)
         if player_turn == 0 or player_turn == 1:
@@ -13,12 +16,19 @@ class GameManager:
         else:
             self.player_turn = randint(0,1)
             self.static_player = False
-        self.agent = MCTS(state_manager=self.state_manager, simulations=simulations, init_player=self.player_turn)
+        mcts = MCTS(state_manager=self.state_manager, simulations=simulations)
+        agent = Agent(mcts)
+        if computer_only:
+            self.players = [ComputerPlayer(agent) for _ in range(2)]
+        else:
+            self.players = list()
+            self.players.append(ComputerPlayer(agent))
+            self.players.append(HumanPlayer())
 
     def run(self, verbose):
         turn = self.player_turn
         while not self.game.is_final_state():
-            action = self.agent.get_action(turn)
+            action = self.players[turn].get_action((self.game.get_state(),turn))
             state = self.game.do_action(action)
             if verbose == "1":
                 print("------------")
@@ -41,6 +51,7 @@ class GameManager:
             win_stats += self.run(verbose)
 
             self.game.set_initial_game()
-            self.agent.reset()
+            for player in self.players:
+                player.reset()
             self.player_turn = randint(0,1) if not self.static_player else self.player_turn
         return win_stats
