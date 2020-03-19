@@ -18,3 +18,4 @@ class StateManager:
 
     def is_winning_state(self, state):
         return self.game._is_final_state(state)
+

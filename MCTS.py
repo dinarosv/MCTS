@@ -1,65 +1,65 @@
-from Node import Node
+from Node import MCTSNode
 import random
 from Agent import Agent
 
 class MCTS(Agent):
-    def __init__(self, state_manager, simulations, rollouts):
+    def __init__(self, state_manager, simulations, init_player):
         super().__init__(state_manager)
-        self.root_node = Node(state_manager)
+        self.root_node = MCTSNode(state_manager, init_player=init_player)
         self.simulations = simulations
-        self.rollouts = rollouts
+        self.init_player = init_player
 
     # Return action that leads to best state after having performed simulations
     def get_action(self, player):
         for _ in range(self.simulations): #Number of simulations
-            print("-------new simulation ------------")
-            print(self.root_node.visits)
+
             # Selection
-            node, current_player = self.selection(player, self.root_node)
+            node = self.selection()
+
             # Expansion
             node.expand_child_nodes()
+
+            if node.is_terminal_node():
+                leaf = node
+            else:
+                leaf = next(iter(node.children.values()))
+
             # Leaf evaluation
-            for _, leaf in node.children.items():
-                value = self.perform_rollout(leaf, current_player)
-                #backpropagation
-                self.backpropagate(leaf, value)
-            
-            # TODO: Aren't q_values updated for each action
-            #print(self.root_node.q_values)
+            winner = self.perform_rollout(leaf)
+
+            #backpropagation
+            self.backpropagate(leaf, winner)
 
         # Choose action
-        action = self.root_node.get_max_value_action() if player == 0 else self.root_node.get_min_value_action()
+        action = self.root_node.get_best_action(c=0)
         n = self.root_node.get_child(action)
 
         # Set root node of the new tree
-        self.root_node = Node(self.state_manager, n.state)
+        self.root_node = MCTSNode(self.state_manager, state=n.state, init_player=n.player_to_move)
 
         return action
 
-    def selection(self, starting_player, start_node):
-        node = start_node
-        player = starting_player
+    def selection(self):
+        node = self.root_node
         while not node.is_leaf_node():
             # Get action following tree policy (choosing highest/lowest value action)
-            action = node.get_max_value_action() if player == 0 else node.get_min_value_action()
+            action = node.get_best_action()
             node = node.get_child(action)
-            player = abs(player - 1)
-        return node, player
+        return node
 
-    def perform_rollout(self, node, player):
-        value = 0
-        for _ in range(self.rollouts):
-            value += self.rollout(node, player)
-            node.prune_children()
-        return value/self.rollouts
+    def perform_rollout(self, node):
+        result = self.rollout(node)
+        node.prune_children()
+        return result
 
-    def rollout(self, node, player):
-        if node.is_terminal:
-            return node.get_reward(player)
+    def rollout(self, node):
+        if node.is_terminal_node():
+            #The player who made the move to get to this state is the winner
+            return abs(node.player_to_move - 1)
         node.expand_child_nodes()
         action = self.behavior_policy(node)
         node = node.get_child(action)
-        return self.rollout(node, abs(player - 1))
+        return self.rollout(node)
 
     def backpropagate(self, node, value):
         node.backpropagate(value)
@@ -68,4 +68,4 @@ class MCTS(Agent):
         return random.sample(list(node.children), 1)[0]
 
     def reset(self):
-        self.root_node = Node(self.state_manager)
+        self.root_node = MCTSNode(self.state_manager, init_player=self.init_player)

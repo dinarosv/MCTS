@@ -7,13 +7,13 @@ class GameManager:
     def __init__(self, game, player_turn=None, simulations=500, rollouts=1):
         self.game = game
         self.state_manager = StateManager(game=game)
-        self.agent = MCTS(state_manager=self.state_manager, simulations=simulations, rollouts=rollouts)
         if player_turn == 0 or player_turn == 1:
             self.player_turn = player_turn
             self.static_player = True
         else:
             self.player_turn = randint(0,1)
             self.static_player = False
+        self.agent = MCTS(state_manager=self.state_manager, simulations=simulations, init_player=self.player_turn)
 
     def run(self, verbose):
         turn = self.player_turn
