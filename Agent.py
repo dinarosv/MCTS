@@ -1,10 +1,10 @@
 
 class Agent:
-    def __init__(self, MCTS):
-        self.MCTS = MCTS
+    def __init__(self, manager):
+        self.state_manager = manager
 
-    def get_action(self, player):
-        return self.MCTS.get_action(player)
+    def get_action(self, player_name):
+        raise NotImplementedError
 
     def reset(self):
-        self.MCTS.reset()
+        raise NotImplementedError
