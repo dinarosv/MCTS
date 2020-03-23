@@ -3,16 +3,12 @@ from NIM import NIM
 import sys, getopt
 from GameManager import GameManager
 
-#ledge = Ledge([1, 1, 1, 0, 0, 2])
-#nim = NIM(10, 3) 
-
-def main(argv):
+def get_vars(argv):
     game_type = None
     board = None
     starting_player = None
     M = 500
     batch_size = 1
-    rollouts = 1
     verbose = "0"
     opts, _ = getopt.getopt(argv,"hg:b:s:M:n:v:r:",["game=","board=","starting_player=", "M=", "batch=", "verbose="])
     for opt, arg in opts:
@@ -36,8 +32,6 @@ def main(argv):
             batch_size = eval(arg) if type(eval(arg)) is int else 1
         elif opt in ("-v", "--verbose"):
             verbose = arg
-        elif opt in ("-r", "--rollouts"):
-            rollouts = eval(arg) if type(eval(arg)) is int else 1
     if board and game_type:
         board_as_list = eval(board)
         if type(board_as_list) is list:
@@ -53,11 +47,16 @@ def main(argv):
             sys.exit(2)
     else:
         game = NIM(10, 3)
+    return game, game_type, board, starting_player, M, batch_size, verbose
+
+def main(argv):
+    game, game_type, board, starting_player, M, batch_size, verbose = get_vars(argv)
 
     print(f"Starting game '{game_type}' with board '{board}', starting-player '{starting_player}', M: '{M}', batch-size: '{batch_size}', verbose: '{verbose}'")
 
     game_manager = GameManager(game=game, player_turn=starting_player, simulations=M)
     won = game_manager.run_batch(batch_size, verbose)
+    
     if starting_player==None:
         print(f"Player 1 won: {won}/{batch_size}")
     else:
