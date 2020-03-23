@@ -13,7 +13,7 @@ class GameManager:
         else:
             self.player_turn = randint(0,1)
             self.static_player = False
-        self.agent = MCTS(state_manager=self.state_manager, simulations=simulations, init_player=self.player_turn)
+        self.agent = MCTS(state_manager=self.state_manager, simulations=simulations)
 
     def run(self, verbose):
         turn = self.player_turn
@@ -41,6 +41,5 @@ class GameManager:
             win_stats += self.run(verbose)
 
             self.game.set_initial_game()
-            self.agent.reset()
             self.player_turn = randint(0,1) if not self.static_player else self.player_turn
         return win_stats
