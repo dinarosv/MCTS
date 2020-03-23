@@ -56,9 +56,13 @@ def main(argv):
 
     print(f"Starting game '{game_type}' with board '{board}', starting-player '{starting_player}', M: '{M}', batch-size: '{batch_size}', verbose: '{verbose}'")
 
-    game_manager = GameManager(game=game, player_turn=starting_player, simulations=M, rollouts=rollouts)
+    game_manager = GameManager(game=game, player_turn=starting_player, simulations=M)
     won = game_manager.run_batch(batch_size, verbose)
-    print(f"Player {starting_player} won: {won}/{batch_size}")
+    if starting_player==None:
+        print(f"Player 1 won: {won}/{batch_size}")
+    else:
+        winning = won if starting_player == 1 else batch_size-won
+        print(f"Player {starting_player} won: {winning}/{batch_size}")
 
 if __name__ == "__main__":
     main(sys.argv[1:])
