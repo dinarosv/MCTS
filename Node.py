@@ -32,13 +32,22 @@ class MCTSNode(Node):
         self.results = {0: 0, 1: 0}
 
     def win_rate(self, player):
-        return self.results[player] / (self.visits + 1)
+        if self.visits == 0:
+            return math.inf
+        return self.results[player] / (self.visits)
 
-    def get_best_action(self, c=1):
+    def get_best_action(self, c=1.4):
         values = dict()
         for action, child in self.children.items():
-            values[action] = child.win_rate(self.player_to_move) + c * math.sqrt(math.log(self.visits) / (child.visits + 1))
+            values[action] = math.inf if child.visits == 0 else child.win_rate(self.player_to_move) + c * math.sqrt(math.log(self.visits) / child.visits)
         return max(values, key=values.get)
+
+    def get_most_visited_action(self):
+        values = dict()
+        for action, child in self.children.items():
+            values[action] = child.visits
+        return max(values, key=values.get)
+
 
     def backpropagate(self, winning_player):
         self.visits += 1

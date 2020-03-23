@@ -22,7 +22,7 @@ class MCTS(Agent):
             if node.is_terminal_node():
                 leaf = node
             else:
-                leaf = next(iter(node.children.values()))
+                leaf = node.get_child(self.behavior_policy(node))
 
             # Leaf evaluation
             winner = self.perform_rollout(leaf)
@@ -31,7 +31,7 @@ class MCTS(Agent):
             self.backpropagate(leaf, winner)
 
         # Choose action
-        action = self.root_node.get_best_action(c=0)
+        action = self.root_node.get_most_visited_action()
         n = self.root_node.get_child(action)
 
         # Set root node of the new tree
