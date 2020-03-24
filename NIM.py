@@ -13,6 +13,7 @@ class NIM(Game):
   def get_state(self):
     return self.pieces_left
 
+  # Get possible actions. Returns list of actions
   def get_actions(self, state=None):
     if state == None:
       state = self.pieces_left
@@ -36,6 +37,7 @@ class NIM(Game):
   def _is_final_state(self, state):
     return state == 0
 
+  # Get where an action takes you (without really doing action)
   def peek(self, state, action):
     return self._do_action(cp.deepcopy(state), action)
 

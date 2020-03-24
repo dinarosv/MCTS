@@ -3,6 +3,7 @@ from NIM import NIM
 import sys, getopt
 from GameManager import GameManager
 
+# Get arguments from command line
 def get_vars(argv):
     game_type = None
     board = None
@@ -13,7 +14,7 @@ def get_vars(argv):
     opts, _ = getopt.getopt(argv,"hg:b:s:M:n:v:r:",["game=","board=","starting_player=", "M=", "batch=", "verbose="])
     for opt, arg in opts:
         if opt == '-h':
-            print("-g or --game: Type of game. Should be 'ledge' or 'nim'")
+            print("-g or --game: Type of game. Should be ledge or nim")
             print("-b or --board: Initial board. E.g. for ledge: [0,1,1,2,0] and for nim: [10,2]")
             print("-s or --starting_player: Starting player (not required, default is random). 0 or 1.")
             print("-M or --M: Number of simulations (not required, default is 500)")
@@ -54,9 +55,11 @@ def main(argv):
 
     print(f"Starting game '{game_type}' with board '{board}', starting-player '{starting_player}', M: '{M}', batch-size: '{batch_size}', verbose: '{verbose}'")
 
+    # Initialize game manager and run batches
     game_manager = GameManager(game=game, player_turn=starting_player, simulations=M)
     won = game_manager.run_batch(batch_size, verbose)
     
+    # Print results
     if starting_player==None:
         print(f"Player 1 won: {won}/{batch_size}")
     else:

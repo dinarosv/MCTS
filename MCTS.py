@@ -20,7 +20,7 @@ class MCTS(Agent):
             # Expansion
             node.expand_child_nodes()
 
-            #Find a child to do rollouts on unless it is a terminal node
+            # Find a child to do rollouts on unless it is a terminal node
             if node.is_terminal_node():
                 leaf = node
             else:
@@ -29,12 +29,13 @@ class MCTS(Agent):
             # Leaf evaluation
             winner = self.evaluate_leaf_node(leaf)
 
-            #backpropagation
+            # Backpropagation
             self.backpropagate(leaf, winner)
 
         # Choose action
         return self.root_node.get_most_visited_action()
 
+    # Select leaf node to expand
     def selection(self):
         node = self.root_node
         #Keep propagating down towards a leaf node from the root
@@ -44,27 +45,27 @@ class MCTS(Agent):
             node = node.get_child(action)
         return node
 
-    #Gets the winner of a rollout
+    # Gets the winner of a rollout
     def evaluate_leaf_node(self, node):
         result = self.rollout(node)
         node.prune_children()
         return result
 
-    #Recursive function to get to a terminal node to find a victor
+    # Recursive function to get to a terminal node to find a victor
     def rollout(self, node):
         if node.is_terminal_node():
-            #The player who made the move to get to this state is the winner
+            # The player who made the move to get to this state is the winner
             return abs(node.player_to_move - 1)
         node.expand_child_nodes()
-        #Use behavior policy in rollout. For us it is a random choice from children
+        # Use behavior policy in rollout. For us it is a random choice from children
         action = self.behavior_policy(node)
         node = node.get_child(action)
         return self.rollout(node)
 
     def backpropagate(self, node, value):
-        #Feed the result to the backpropagate-function of the node that the rollout was performed on
+        # Feed the result to the backpropagate-function of the node that the rollout was performed on
         node.backpropagate(value)
 
     def behavior_policy(self, node):
-        #Our behavior policy is random
+        # Our behavior policy is random
         return random.sample(list(node.children), 1)[0]

@@ -1,3 +1,6 @@
+
+# Class for managing state and possible child states of game
+
 class StateManager:
     def __init__(self, game):
         self.game = game
