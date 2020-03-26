@@ -1,4 +1,5 @@
 
+# Interface game with required functions
 class Game:
     def set_initial_game(self):
         raise NotImplementedError

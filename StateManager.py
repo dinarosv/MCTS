@@ -1,3 +1,6 @@
+
+# Class for managing state and possible child states of game
+
 class StateManager:
     def __init__(self, game):
         self.game = game
@@ -18,3 +21,4 @@ class StateManager:
 
     def is_winning_state(self, state):
         return self.game._is_final_state(state)
+

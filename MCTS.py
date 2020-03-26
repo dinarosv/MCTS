@@ -1,67 +1,71 @@
-from Node import Node
+from Node import MCTSNode
 import random
 from Agent import Agent
 
 class MCTS(Agent):
     def __init__(self, state_manager, simulations):
         super().__init__(state_manager)
-        self.root_node = Node(state_manager)
         self.simulations = simulations
+        self.state_manager = state_manager
 
     # Return action that leads to best state after having performed simulations
     def get_action(self, player):
+        #Initialize a new root node with the current game state before the simulations start
+        self.root_node = MCTSNode(self.state_manager, init_player=player)
         for _ in range(self.simulations): #Number of simulations
+
             # Selection
-            node, current_player = self.selection(player, self.root_node)
+            node = self.selection()
+
             # Expansion
             node.expand_child_nodes()
-            # Leaf evaluation and backpropagation
-            #leaf, p = self.selection(current_player, node)
 
-            for _, leaf in node.children.items():
-                self.perform_rollouts(leaf, current_player)
-            
-            # TODO: Aren't q_values updated for each action
-            #print(self.root_node.q_values)
+            # Find a child to do rollouts on unless it is a terminal node
+            if node.is_terminal_node():
+                leaf = node
+            else:
+                leaf = node.get_child(self.behavior_policy(node))
+
+            # Leaf evaluation
+            winner = self.evaluate_leaf_node(leaf)
+
+            # Backpropagation
+            self.backpropagate(leaf, winner)
 
         # Choose action
-        action = self.root_node.get_max_value_action() if player == 1 else self.root_node.get_min_value_action()
-        n = self.root_node.get_child(action)
+        return self.root_node.get_most_visited_action()
 
-        # Set root node of the new tree
-        self.root_node = Node(self.state_manager, n.state)
-
-        return action
-
-    def selection(self, starting_player, start_node):
-        node = start_node
-        player = starting_player
+    # Select leaf node to expand
+    def selection(self):
+        node = self.root_node
+        #Keep propagating down towards a leaf node from the root
         while not node.is_leaf_node():
-            # Get action following tree policy (choosing highest/lowest value action)
-            action = node.get_max_value_action() if player == 1 else node.get_min_value_action()
+            # Get action following tree policy
+            action = node.get_best_action()
             node = node.get_child(action)
-            player = abs(player - 1)
-        return node, player
+        return node
 
-    def perform_rollouts(self, node, player):
-        #for _ in range(self.rollout_simulations):
-        value = self.rollout(node, player)
-        self.backpropagate(node, value)
+    # Gets the winner of a rollout
+    def evaluate_leaf_node(self, node):
+        result = self.rollout(node)
         node.prune_children()
+        return result
 
-    def rollout(self, node, player):
-        if node.is_terminal:
-            return node.get_reward(player)
+    # Recursive function to get to a terminal node to find a victor
+    def rollout(self, node):
+        if node.is_terminal_node():
+            # The player who made the move to get to this state is the winner
+            return abs(node.player_to_move - 1)
         node.expand_child_nodes()
+        # Use behavior policy in rollout. For us it is a random choice from children
         action = self.behavior_policy(node)
         node = node.get_child(action)
-        return self.rollout(node, abs(player - 1))
+        return self.rollout(node)
 
     def backpropagate(self, node, value):
+        # Feed the result to the backpropagate-function of the node that the rollout was performed on
         node.backpropagate(value)
 
     def behavior_policy(self, node):
+        # Our behavior policy is random
         return random.sample(list(node.children), 1)[0]
-
-    def reset(self):
-        self.root_node = Node(self.state_manager)

@@ -6,5 +6,3 @@ class Agent:
     def get_action(self, player_name):
         raise NotImplementedError
 
-    def reset(self):
-        raise NotImplementedError
