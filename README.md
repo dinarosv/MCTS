@@ -1,5 +1,4 @@
-# MCTS
-## Project 2: Monte Carlo Tree Search
+# Monte Carlo Tree Search (MCTS) for NIM and Ledge games
 
 Run main with flag -h to get the possible options
 
