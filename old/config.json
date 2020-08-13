@@ -1,9 +1,0 @@
-{
-    "NIM_N": 10,
-    "NIM_K": 2,
-    "LedgeBoardConfiguration": [1,1,1,0,0,1,0,1,1,0,1,0,2],
-    "Verbose_mode": false,
-    "GamesInBatch": 100,
-    "SimulationsPerGameMove": 200,
-    "StartingPlayer": "Player1"
-}
